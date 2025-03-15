@@ -187,4 +187,3 @@ After making changes to the database configuration, it's often a good idea to re
 In Summary
 
 The error "Database '/Users/netmanagement' not found" is a common issue with Apache Derby. The stack trace shows that the problem is happening during the connection attempt, likely from within IntelliJ's database tools. The solution is to correct the database path in your connection URL (either in IntelliJ or in your Java code) and ensure that the database exists or that create=true is used.
-
