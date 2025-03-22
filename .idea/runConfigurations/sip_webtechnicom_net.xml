@@ -1,0 +1,41 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="sip.webtechnicom.net" type="PythonConfigurationType" factoryName="Python">
+    <module name="xero-partner-netmanagement.online-integration-" />
+    <option name="ENV_FILES" value="$PROJECT_DIR$/../cli_1.0.1_macOS_arm64/requirements.sh" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="&gt;     DOMAIN" value="http://frontend:3000 # or http://web:4242 for clients/html" />
+      <env name="&gt;     export COMPOSE_FILE" value="docker-compose.yml:docker-compose.override.yml:docker-compose.playwright.yml" />
+      <env name="&gt;     PRICE" value="price_xxxx # the price ID you have" />
+      <env name="@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration-/env (master) $     docker compose --profile" value="frontend up" />
+      <env name="docker compose --profile" value="frontend up" />
+      <env name="PYTHONUNBUFFERED" value="1" />
+    </envs>
+    <option name="SDK_HOME" value="" />
+    <option name="SDK_NAME" value="Python 3.13" />
+    <option name="WORKING_DIRECTORY" value="$ClipboardContent$" />
+    <option name="IS_MODULE_SDK" value="false" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <EXTENSION ID="net.ashald.envfile">
+      <option name="IS_ENABLED" value="true" />
+      <option name="IS_SUBST" value="true" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="true" />
+      <option name="IS_IGNORE_MISSING_FILES" value="true" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="true" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        <ENTRY IS_ENABLED="true" PARSER="env" IS_EXECUTABLE="false" PATH="$PROJECT_DIR$/../accept-a-payment-on-webtechnicom/docker-compose.playwright.yml" />
+      </ENTRIES>
+    </EXTENSION>
+    <option name="SCRIPT_NAME" value="$ClipboardContent$$ClipboardContent$" />
+    <option name="PARAMETERS" value="$ClipboardContent$" />
+    <option name="SHOW_COMMAND_LINE" value="false" />
+    <option name="EMULATE_TERMINAL" value="false" />
+    <option name="MODULE_MODE" value="false" />
+    <option name="REDIRECT_INPUT" value="false" />
+    <option name="INPUT_FILE" value="" />
+    <method v="2" />
+  </configuration>
+</component>
