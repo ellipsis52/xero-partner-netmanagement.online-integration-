@@ -53,9 +53,7 @@ The following steps set up and start a particular sample app with particular imp
     PRICE=price_xxxx # the price ID you have
     ```
 3. (For only React/Vue apps) replace the proxy destination with `http://web:4242` in the `package.json` of the client app like below.
-    ```bash
-    sed -i -E 's/("proxy":\s*)"http:\/\/localhost:4242"/\1"http:\/\/web:4242"/' custom-payment-flow/client/react-cra/package.json
-    ```
+    
 4. Start the sample app
     ```bash
     docker compose --profile=frontend up
