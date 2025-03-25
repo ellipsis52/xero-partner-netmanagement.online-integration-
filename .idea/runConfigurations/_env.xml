@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="sip.webtechnicom.net" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name=".env" type="PythonConfigurationType" factoryName="Python">
     <module name="xero-partner-netmanagement.online-integration-" />
-    <option name="ENV_FILES" value="$PROJECT_DIR$/Xero Partner/xero-partner-netmanagement.online-integration-" />
+    <option name="ENV_FILES" value="XERO_API_KEY=toSBgRTWIhGlrVGFblqQGpfMYjUojOhPFElcWQ8oHoKD471H XERO_CLIENT_ID=5628158821F54AAB925C4175659F5043" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="SDK_NAME" value="Python 3.9 (gocardless-pro-python-master)" />
+    <option name="SDK_NAME" value="Python 3.13" />
     <option name="WORKING_DIRECTORY" value="$ClipboardContent$" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -24,7 +24,7 @@
       </ENTRIES>
     </EXTENSION>
     <option name="SCRIPT_NAME" value="$ClipboardContent$" />
-    <option name="PARAMETERS" value="" />
+    <option name="PARAMETERS" value="$ClipboardContent$" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
