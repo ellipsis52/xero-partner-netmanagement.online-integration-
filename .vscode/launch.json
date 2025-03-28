@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Attach to Kubernetes Pod (Python)",
+            "type": "cloudcode.kubernetes",
+            "request": "attach",
+            "language": "Python",
+            "debugPort": 3000,
+            "podSelector": {
+                "app": "deployment-name"
+            },
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "Path to the Remote Directory Containing the Program"
+        },
+        {
             "name": "Débogueur Python : Fichier actuel",
             "type": "debugpy",
             "request": "launch",
@@ -12,4 +24,748 @@
             "console": "integratedTerminal"
         }
     ]
-}
+    bash: expires_in:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   "token_type": "Bearer",
+    bash: token_type:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   "refresh_token": "xxxxxxxxx",
+    bash: refresh_token:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   "scope": ["email", "profile", "openid", "accounting.transactions", "offline_access"]
+    bash: scope:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ }# -*- coding: utf-8 -*-
+    bash: }#: command not found
+    mport wraps
+    from io import BytesIO
+    from logging.config import dictConfig
+    from flask import Flask, url_for, render_template, session, redirect, json, send_file
+    from flask_session import Session
+    from xero_python.accounting import AccountingApi, ContactPerson, Contact, Contacts
+    from xero_python.api_cli@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ import os
+    bash: import: command not found
+    ent import ApiClient, serialize
+    from xero_python.api_client.configuration import Configuration
+    from xero_python.api_client.oauth2 import OAuth2Token
+    from xero_python.exceptions import AccountingBadRequestException
+    from xero_python.identity import IdentityApi
+    from xero_python.utils import getvalue
+    im@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from functools import wraps
+    port logging_settings
+    from utils import jsonify, sfrom: can't read /var/mail/functools
+    erialize_model
+    
+    dictConfig(logging_settings.default_settings)
+    
+    # configure main flask application
+    app = Flask(__name__)
+    app.config.from_object("default_settings")
+    app.config.from_pyfile("config.py", silent=True)
+    
+    # configure persistent session cache
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from io import BytesIO
+    Session(app)
+    
+    # configure xero-python sdk client
+    afrom: can't read /var/mail/io
+    pi_client = ApiClient(
+        Configuration(
+            debug=app.config["DEBUG"],
+            oauth2_token=OAuth2Token(
+                client_id=app.config["CLIENT_ID"], client_secret=app.config["CLIENT_SECRET"]
+            ),
+        ),
+        pool_threads=1,
+    )
+    
+    # configu@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from logging.config import dictConfig
+    re token persistence and exchange point between apfrom: can't read /var/mail/logging.config
+    p session and xero-python
+    @api_client.oauth2_token_getter
+    def obtain_xero_oauth2_token():
+        return session.get("token")
+    
+    @api_client.oauth2_token_saver
+    def store_xero_oauth2_token(token):
+        session["token"] = token
+        session.modified = True
+    
+    @app.route("/get_token")
+    def get_token():
+        try:
+     @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from flask import Flask, url_for, render_template, session, redirect, json, send_file
+    from: can't read /var/mail/flask
+           # no user auth flow, no exchanging temp code for token
+            xero_token = api_client.get_client_credentials_token()
+        except Exception as e:
+            print(e)
+            raise
+        # todo validate state value
+        if xero_token is None or xero_token.get("access_token") is None:
+            return "@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from flask_session import Session
+    from: can't read /var/mail/flask_session
+    Access denied: response=%s" % xero_token
+        store_xero_oauth2_token(xero_token)
+        return redirect(url_for("index", _external=True))
+    
+    @app.route("/accounting_invoice_read_all")
+    @xero_token_required
+    def accounting_invoice_read_all():
+        code = get_code_snippet("INVOICES","READ_ALL")
+    
+        #[INVOICES:READ_ALL]
+        accounting_api = AccountingApi(api@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from xero_python.accounting import AccountingApi, ContactPerson, Contact, Contacts
+    _client)
+    
+        try:
+            invoices_read = accountfrom: can't read /var/mail/xero_python.accounting
+    ing_api.get_invoices('')
+        except AccountingBadRequestException as exception:
+            output = "Error: " + exception.reason
+            json = jsonify(exception.error_data)
+        else:
+            output = "Total invoices found:  {}.".format(len(invoices_rea@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from xero_python.api_client import ApiClient, serialize
+    d.invoices)
+            )
+            json = serialize_modfrom: can't read /var/mail/xero_python.api_client
+    el(invoices_read)
+        #[/INVOICES:READ_ALL]
+    
+        return render_template(
+            "output.html", title="Invoices",code=code, output=output, json=json, len = 0, set="accounting", endpoint="invoice", action="read_all"
+        )@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from xero_python.api_client.configuration import Configuration
+    from: can't read /var/mail/xero_python.api_client.configuration
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from xero_python.api_client.oauth2 import OAuth2Token
+    from: can't read /var/mail/xero_python.api_client.oauth2
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from xero_python.exceptions import AccountingBadRequestException
+    from: can't read /var/mail/xero_python.exceptions
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from xero_python.identity import IdentityApi
+    from: can't read /var/mail/xero_python.identity
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from xero_python.utils import getvalue
+    from: can't read /var/mail/xero_python.utils
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ import logging_settings
+    bash: import: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from utils import jsonify, serialize_model
+    from: can't read /var/mail/utils
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ dictConfig(logging_settings.default_settings)
+    bash: syntax error near unexpected token `logging_settings.default_settings'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # configure main flask application
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ app = Flask(__name__)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ app.config.from_object("default_settings")
+    bash: syntax error near unexpected token `"default_settings"'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ app.config.from_pyfile("config.py", silent=True)
+    bash: syntax error near unexpected token `"config.py",'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # configure persistent session cache
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ Session(app)
+    bash: syntax error near unexpected token `app'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # configure xero-python sdk client
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ api_client = ApiClient(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     Configuration(
+    bash: syntax error near unexpected token `newline'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         debug=app.config["DEBUG"],
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         oauth2_token=OAuth2Token(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             client_id=app.config["CLIENT_ID"], client_secret=app.config["CLIENT_SECRET"]
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         ),
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     ),
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     pool_threads=1,
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # configure token persistence and exchange point between app session and xero-python
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ @api_client.oauth2_token_getter
+    bash: @api_client.oauth2_token_getter: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ def obtain_xero_oauth2_token():
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     return session.get("token")
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ @api_client.oauth2_token_saver
+    bash: @api_client.oauth2_token_saver: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ def store_xero_oauth2_token(token):
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     session["token"] = token
+    bash: session[token]: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     session.modified = True
+    bash: session.modified: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ @app.route("/get_token")
+    bash: syntax error near unexpected token `"/get_token"'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ def get_token():
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     try:
+    bash: try:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         # no user auth flow, no exchanging temp code for token
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         xero_token = api_client.get_client_credentials_token()
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     except Exception as e:
+    bash: except: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         print(e)
+    bash: syntax error near unexpected token `e'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         raise
+    bash: raise: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     # todo validate state value
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     if xero_token is None or xero_token.get("access_token") is None:
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         return "Access denied: response=%s" % xero_token
+    bash: return: Access denied: response=%s: numeric argument required
+    bash: return: can only `return' from a function or sourced script
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     store_xero_oauth2_token(xero_token)
+    bash: syntax error near unexpected token `xero_token'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     return redirect(url_for("index", _external=True))
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ @app.route("/accounting_invoice_read_all")
+    bash: syntax error near unexpected token `"/accounting_invoice_read_all"'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ @xero_token_required
+    bash: @xero_token_required: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ def accounting_invoice_read_all():
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     code = get_code_snippet("INVOICES","READ_ALL")
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     #[INVOICES:READ_ALL]
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     accounting_api = AccountingApi(api_client)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     try:
+    bash: try:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         invoices_read = accounting_api.get_invoices('')
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     except AccountingBadRequestException as exception:
+    bash: except: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         output = "Error: " + exception.reason
+    bash: output: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         json = jsonify(exception.error_data)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     else:
+    bash: else:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         output = "Total invoices found:  {}.".format(len(invoices_read.invoices)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         )
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         json = serialize_model(invoices_read)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     #[/INVOICES:READ_ALL]
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     return render_template(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         "output.html", title="Invoices",code=code, output=output, json=json, len = 0, set="accounti
+    ng", endpoint="invoice", action="read_all"
+    bash: output.html,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     )# configure xero-python sdk client
+    bash: syntax error near unexpected token `)'
+    iClient(
+        Configuration(
+            debug=app.config["DEBUG"],
+            oauth2_token=OAuth2Token(
+                client_id=app.config["CLIENT_ID"], client_secret=app.config["CLIENT_SECRET"]
+            ),
+        ),
+        pool_threads=1,
+    )
+    
+    try:
+        # pass True for app_store_billing - defaults to False if no valu@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ api_client = ApiClient(
+    bash: syntax error near unexpected token `('
+    e provided
+        xero_token = api_client.get_client_credentials_token(True)
+    except Exception as e:
+        print(e)
+        raise
+    
+    app_store_api = AppStoreApi(api_client)
+    
+    subscription = app_store_api.get_subscription(subscription_id)
+    print(subscription)
+    
+    {
+      'current_period_end': datetime.datetime(2021, 9, 2@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     Configuration(
+    bash: syntax error near unexpected token `newline'
+    , 14, 8, 58, 772536, tzinfo=tzutc()),
+      'end_date': None,
+      'id': '03bc74f2-1237-4477-b782-2dfb1a6d8b21',
+      'organisation_id': '79e8b2e5-c63d-4dce-888f-e0f3e9eac647',
+      'plans':[
+        {
+          'id': '6abc26f3-9390-4194-8b25-ce8b9942fda9',
+          'name': 'Small',
+          'status': 'ACTIVE',
+          'subscri@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         debug=app.config["DEBUG"],
+    ption_items': [
+            {
+              'end_date': None,
+              'id': '834cff4c-b753-4de2-9e7a-3451e14fa17a',
+              'price': {
+                'amount': Decimal('0.1000'),
+                'currency': 'NZD',
+                'id': '2310de92-c7c0-4bcb-b972-fb7612177bc7'
+              },
+              'product': {
+        @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         oauth2_token=OAuth2Token(
+    bash: syntax error near unexpected token `('
+            'id': '9586421f-7325-4493-bac9-d93be06a6a38',
+                'name': '',
+                'type': 'FIXED',
+                'seat_unit': None
+              },
+              'start_date': datetime.datetime(2021, 8, 2, 14, 8, 58, 772536, tzinfo=tzutc()),
+              'test_mode': True
+            }
+          ]
+        }
+      ],
+      '@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             client_id=app.config["CLIENT_ID"], client_secret=app.config["CLIENT_SECRET"]
+    start_date': datetime.datetime(2021, 8, 2, 14, 8, 58, 772536, tzinfo=tzutc()),
+      'status': 'ACTIVE',
+      'test_mode': True
+    }
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         ),
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     ),
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     pool_threads=1,
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ try:
+    bash: try:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     # pass True for app_store_billing - defaults to False if no value provided
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     xero_token = api_client.get_client_credentials_token(True)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ except Exception as e:
+    bash: except: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     print(e)
+    bash: syntax error near unexpected token `e'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     raise
+    bash: raise: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ app_store_api = AppStoreApi(api_client)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ subscription = app_store_api.get_subscription(subscription_id)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ print(subscription)
+    bash: syntax error near unexpected token `subscription'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ {
+    >   'current_period_end': datetime.datetime(2021, 9, 2, 14, 8, 58, 772536, tzinfo=tzutc()),
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   'end_date': None,
+    bash: end_date:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   'id': '03bc74f2-1237-4477-b782-2dfb1a6d8b21',
+    bash: id:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   'organisation_id': '79e8b2e5-c63d-4dce-888f-e0f3e9eac647',
+    bash: organisation_id:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   'plans':[
+    bash: plans:[: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     {
+    >       'id': '6abc26f3-9390-4194-8b25-ce8b9942fda9',
+    >       'name': 'Small',
+    >       'status': 'ACTIVE',
+    >       'subscription_items': [
+    >         {
+    >           'end_date': None,
+    >           'id': '834cff4c-b753-4de2-9e7a-3451e14fa17a',
+    >           'price': {
+    >             'amount': Decimal('0.1000'),
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             'currency': 'NZD',
+    bash: currency:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             'id': '2310de92-c7c0-4bcb-b972-fb7612177bc7'
+    bash: id:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $           },
+    bash: },: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $           'product': {
+    bash: product:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             'id': '9586421f-7325-4493-bac9-d93be06a6a38',
+    bash: id:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             'name': '',
+    bash: name:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             'type': 'FIXED',
+    bash: type:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             'seat_unit': None
+    bash: seat_unit:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $           },
+    bash: },: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $           'start_date': datetime.datetime(2021, 8, 2, 14, 8, 58, 772536, tzinfo=tzutc()),
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $           'test_mode': True
+    bash: test_mode:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         }
+    bash: syntax error near unexpected token `}'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $       ]
+    bash: ]: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     }
+    bash: syntax error near unexpected token `}'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   ],
+    bash: ],: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   'start_date': datetime.datetime(2021, 8, 2, 14, 8, 58, 772536, tzinfo=tzutc()),
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   'status': 'ACTIVE',
+    bash: status:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $   'test_mode': True
+    bash: test_mode:: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ }
+    bash: syntax error near unexpected token `}'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ accounting_api = AccountingApi(api_client)
+    bash: syntax error near unexpected token `('
+    counts = accounting_api.get_accounts(xero_tenant_id)
+    asset_api = AssetApi(api_client)
+    read_assets = asset_api.get_assets(xero_tenant_id)
+    # ... all the API sets follow the same pattern@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ read_accounts = accounting_api.get_accounts(xero_tenant_id)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ asset_api = AssetApi(api_client)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ read_assets = asset_api.get_assets(xero_tenant_id)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # ... all the API sets follow the same pattern# configure xero-python sdk client
+    iClient(
+        Configuration(
+            debug=app.config["DEBUG"],
+            oauth2_token=OAuth2Token(
+                client_id=app.config["CLIENT_ID"], client_secret=app.config["CLIENT_SECRET"]
+            ),
+        ),
+        pool_threads=1,
+    )
+    
+    # configure token persistence and exchange point between app session and xero-python
+    @api_client.oauth2_token_getter
+    def ob@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ api_client = ApiClient(
+    bash: syntax error near unexpected token `('
+    tain_xero_oauth2_token():
+        return session.get("token")
+    
+    @api_client.oauth2_token_saver
+    def store_xero_oauth2_token(token):
+        session["token"] = token
+        session.modified = True
+    
+    # get existing token set
+    token_set = get_token_set_from_database(user_id); // example function name
+    
+    # set token set to the api client
+    store_xero_oauth2_token(token_set)
+    
+    # refresh token set on the api client
+    api_client.refresh_oauth2_token()
+    
+    # call the Xero API
+    accounting_api = AccountingApi(api_client)
+    read_acco@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     Configuration(
+    bash: syntax error near unexpected token `newline'
+    unts = accounting_api.get_accounts(xero_tenant_id)@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         debug=app.config["DEBUG"],
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         oauth2_token=OAuth2Token(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             client_id=app.config["CLIENT_ID"], client_secret=app.config["CLIENT_SECRET"]
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         ),
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     ),
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     pool_threads=1,
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # configure token persistence and exchange point between app session and xero-python
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ @api_client.oauth2_token_getter
+    bash: @api_client.oauth2_token_getter: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ def obtain_xero_oauth2_token():
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     return session.get("token")
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ @api_client.oauth2_token_saver
+    bash: @api_client.oauth2_token_saver: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ def store_xero_oauth2_token(token):
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     session["token"] = token
+    bash: session[token]: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     session.modified = True
+    bash: session.modified: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # get existing token set
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ token_set = get_token_set_from_database(user_id); // example function name
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # set token set to the api client
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ store_xero_oauth2_token(token_set)
+    bash: syntax error near unexpected token `token_set'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # refresh token set on the api client
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ api_client.refresh_oauth2_token()
+    > 
+    > # call the Xero API
+    > accounting_api = AccountingApi(api_client)
+    bash: syntax error near unexpected token `accounting_api'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ read_accounts = accounting_api.get_accounts(xero_tenant_id)from xero_python.accounting import AccountingApi
+    bash: syntax error near unexpected token `('
+    rom xero_python.utils import getvalue
+    
+    accounting_api = AccountingApi(api_client)
+    
+    # Get Accounts
+    read_accounts = accounting_api.get_accounts(xero_tenant_id)
+    account_id = getvalue(read_accounts, "accounts.0.account_id", "")
+    
+    # Get Account by ID
+    read_one_account = accounting_api.get_account(xero_tena@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ from xero_python.utils import getvalue
+    from: can't read /var/mail/xero_python.utils
+    nt_id, account_id)
+    
+    # Create Invoice
+    # get contact
+    read_contacts = accounting_api.get_contacts(xero_tenant_id)
+    contact_id = getvalue(read_contacts, "contacts.0.contact_id", "")
+    # get account
+    where = "Type==\"SALES\"&&Status==\"ACTIVE\""
+    read_accounts = accounting_api.get_accounts(
+        xero_tenant_id@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    , where=where
+    )
+    account_id = getvalue(read_accounts, "accounts.0.account_id", "")
+    # build Invoices
+    contact = Contact(
+        contact_id=contact_id
+    )
+    line_item = LineItem(
+        account_code=account_id,
+        description= "Consulting",
+        quantity=1.0,
+        unit_amount=10.0,
+    )
+    invoice = Invoice(
+        line_it@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ accounting_api = AccountingApi(api_client)
+    bash: syntax error near unexpected token `('
+    ems=[line_item],
+        contact=contact,
+        due_date= dateutil.parser.parse("2020-09-03T00:00:00Z"),
+        date= dateutil.parser.parse("2020-07-03T00:00:00Z"),
+        type="ACCREC"
+    )
+    invoices = Invoices(invoices=[invoice])
+    created_invoices = accounting_api.create_invoices(xero_tenant_id, invoices=invoices)@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    
+    invoice_id = getvalue(read_invoices, "invoices.0.invoice_id", "")
+    
+    # Create Attachment
+    include_online = True
+    file_name = "helo-heros.jpg"
+    path_to_upload = Path(__file__).resolve().parent.joinpath(file_name)
+    open_file = open(path_to_upload, 'rb')
+    body = open_file.read()
+    content_type = mimetypes.Mime@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # Get Accounts
+    Types().guess_type(file_name)[0]
+    
+    created_invoice_attachments_by_file_name = accounting_api.create_invoice_attachment_by_file_name(
+        xero_tenant_id,
+        invoice_id,
+        file_name,
+        body,
+        include_online,
+    )@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ read_accounts = accounting_api.get_accounts(xero_tenant_id)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ account_id = getvalue(read_accounts, "accounts.0.account_id", "")
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # Get Account by ID
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ read_one_account = accounting_api.get_account(xero_tenant_id, account_id)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # Create Invoice
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # get contact
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ read_contacts = accounting_api.get_contacts(xero_tenant_id)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ contact_id = getvalue(read_contacts, "contacts.0.contact_id", "")
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # get account
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ where = "Type==\"SALES\"&&Status==\"ACTIVE\""
+    bash: where: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ read_accounts = accounting_api.get_accounts(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     xero_tenant_id, where=where
+    bash: xero_tenant_id,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ account_id = getvalue(read_accounts, "accounts.0.account_id", "")
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # build Invoices
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ contact = Contact(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     contact_id=contact_id
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ line_item = LineItem(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     account_code=account_id,
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     description= "Consulting",
+    bash: Consulting,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     quantity=1.0,
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     unit_amount=10.0,
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ invoice = Invoice(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     line_items=[line_item],
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     contact=contact,
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     due_date= dateutil.parser.parse("2020-09-03T00:00:00Z"),
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     date= dateutil.parser.parse("2020-07-03T00:00:00Z"),
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     type="ACCREC"
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ invoices = Invoices(invoices=[invoice])
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ created_invoices = accounting_api.create_invoices(xero_tenant_id, invoices=invoices)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ invoice_id = getvalue(read_invoices, "invoices.0.invoice_id", "")
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ # Create Attachment
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ include_online = True
+    bash: include_online: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ file_name = "helo-heros.jpg"
+    bash: file_name: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ path_to_upload = Path(__file__).resolve().parent.joinpath(file_name)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ open_file = open(path_to_upload, 'rb')
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ body = open_file.read()
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ content_type = mimetypes.MimeTypes().guess_type(file_name)[0]
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ created_invoice_attachments_by_file_name = accounting_api.create_invoice_attachment_by_file_name(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     xero_tenant_id,
+    bash: xero_tenant_id,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     invoice_id,
+    bash: invoice_id,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     file_name,
+    bash: file_name,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     body,
+    bash: body,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     include_online,
+    bash: include_online,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )# configure api_client for use with xero-python sdk client
+    bash: syntax error near unexpected token `)'
+    (
+            debug=false,
+            oauth2_token=OAuth2Token(
+                client_id="YOUR_CLIENT_ID", client_secret="YOUR_CLIENT_SECRET"
+            ),
+        ),
+        pool_threads=1,
+    )
+    
+    api_client.set_oauth2_token("YOUR_ACCESS_TOKEN")
+    
+    def accounting_get_invoices@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ api_client = ApiClient(
+    bash: syntax error near unexpected token `('
+    ():
+        api_instance = AccountingApi(api_client)
+        xero_tenant_id = 'YOUR_XERO_TENANT_ID'
+        if_modified_since = dateutil.parser.parse("2020-02-06T12:17:43.202-08:00")
+        where = 'Status=="DRAFT"'
+        order = 'InvoiceNumber ASC'
+        ids = ["00000000-0000-0000-0000-000000000000"]
+        invoice_numb@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     Configuration(
+    bash: syntax error near unexpected token `newline'
+    ers = ["INV-001", "INV-002"]
+        contact_ids = ["00000000-0000-0000-0000-000000000000"]
+        statuses = ["DRAFT", "SUBMITTED"]
+        include_archived = 'true'
+        created_by_my_app = 'false'
+        summary_only = 'true'
+    
+    api_response = api_instance.get_invoices(
+        xero_tenant_id,
+        if_modified_since,
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         debug=false,
+        where,
+        order,
+        ids,
+        invoice_numbers,
+        contact_ids,
+        statuses,
+        page,
+        include_archived,
+        created_by_my_app,
+        unitdp,
+        summary_only
+    )@ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         oauth2_token=OAuth2Token(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $             client_id="YOUR_CLIENT_ID", client_secret="YOUR_CLIENT_SECRET"
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $         ),
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     ),
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     pool_threads=1,
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )
+    bash: syntax error near unexpected token `)'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ api_client.set_oauth2_token("YOUR_ACCESS_TOKEN")
+    bash: syntax error near unexpected token `"YOUR_ACCESS_TOKEN"'
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ def accounting_get_invoices():
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     api_instance = AccountingApi(api_client)
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     xero_tenant_id = 'YOUR_XERO_TENANT_ID'
+    bash: xero_tenant_id: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     if_modified_since = dateutil.parser.parse("2020-02-06T12:17:43.202-08:00")
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     where = 'Status=="DRAFT"'
+    bash: where: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     order = 'InvoiceNumber ASC'
+    bash: order: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     ids = ["00000000-0000-0000-0000-000000000000"]
+    bash: ids: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     invoice_numbers = ["INV-001", "INV-002"]
+    bash: invoice_numbers: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     contact_ids = ["00000000-0000-0000-0000-000000000000"]
+    bash: contact_ids: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     statuses = ["DRAFT", "SUBMITTED"]
+    bash: statuses: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     include_archived = 'true'
+    bash: include_archived: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     created_by_my_app = 'false'
+    bash: created_by_my_app: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     summary_only = 'true'
+    bash: summary_only: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ 
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ api_response = api_instance.get_invoices(
+    bash: syntax error near unexpected token `('
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     xero_tenant_id,
+    bash: xero_tenant_id,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     if_modified_since,
+    bash: if_modified_since,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     where,
+    bash: where,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     order,
+    bash: order,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     ids,
+    bash: ids,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     invoice_numbers,
+    bash: invoice_numbers,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     contact_ids,
+    bash: contact_ids,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     statuses,
+    bash: statuses,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     page,
+    bash: page,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     include_archived,
+    bash: include_archived,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     created_by_my_app,
+    bash: created_by_my_app,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     unitdp,
+    bash: unitdp,: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $     summary_only
+    bash: summary_only: command not found
+    @ellipsis52 ➜ /workspaces/xero-partner-netmanagement.online-integration- (codespace-laughing-sniffle-5p7gv5v9957h7gxg) $ )}
